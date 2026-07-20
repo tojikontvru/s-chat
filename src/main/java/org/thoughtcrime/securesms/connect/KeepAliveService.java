@@ -45,7 +45,7 @@ public class KeepAliveService extends Service {
 
   @Override
   public void onCreate() {
-    Log.i("DeltaChat", "*** KeepAliveService.onCreate()");
+    Log.i("S Chat", "*** KeepAliveService.onCreate()");
     // there's nothing more to do here as all initialisation stuff is already done in
     // ApplicationLoader.onCreate() which is called before this broadcast is sended.
     s_this = this;
@@ -65,7 +65,7 @@ public class KeepAliveService extends Service {
     // as ApplicationLoader.onCreate() is called before a service starts, there is no more to do
     // here,
     // the app is just running fine.
-    Log.i("DeltaChat", "*** KeepAliveService.onStartCommand()");
+    Log.i("S Chat", "*** KeepAliveService.onStartCommand()");
     return START_STICKY;
   }
 
@@ -76,7 +76,7 @@ public class KeepAliveService extends Service {
 
   @Override
   public void onDestroy() {
-    Log.i("DeltaChat", "*** KeepAliveService.onDestroy()");
+    Log.i("S Chat", "*** KeepAliveService.onDestroy()");
     // the service will be restarted due to START_STICKY automatically, there's nothing more to do.
   }
 
@@ -91,7 +91,7 @@ public class KeepAliveService extends Service {
 
   /* The notification
    * A notification is required for a foreground service; and without a foreground service,
-   * Delta Chat won't get new messages reliable
+   * S Chat won't get new messages reliable
    **********************************************************************************************/
 
   private Notification createNotification() {

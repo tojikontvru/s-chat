@@ -37,15 +37,15 @@ public class ForegroundDetector implements Application.ActivityLifecycleCallback
   public void onActivityStarted(@NonNull Activity activity) {
     if (refs == 0) {
       Log.i(
-          "DeltaChat",
+          "S Chat",
           "++++++++++++++++++ first ForegroundDetector.onActivityStarted() ++++++++++++++++++");
       DcHelper.getAccounts(application).startIo();
       if (DcHelper.isNetworkConnected(application)) {
         new Thread(
                 () -> {
-                  Log.i("DeltaChat", "calling maybeNetwork()");
+                  Log.i("S Chat", "calling maybeNetwork()");
                   DcHelper.getAccounts(application).maybeNetwork();
-                  Log.i("DeltaChat", "maybeNetwork() returned");
+                  Log.i("S Chat", "maybeNetwork() returned");
                 })
             .start();
       }
@@ -57,7 +57,7 @@ public class ForegroundDetector implements Application.ActivityLifecycleCallback
   @Override
   public void onActivityStopped(@NonNull Activity activity) {
     if (refs <= 0) {
-      Log.w("DeltaChat", "invalid call to ForegroundDetector.onActivityStopped()");
+      Log.w("S Chat", "invalid call to ForegroundDetector.onActivityStopped()");
       return;
     }
 
@@ -65,7 +65,7 @@ public class ForegroundDetector implements Application.ActivityLifecycleCallback
 
     if (refs == 0) {
       Log.i(
-          "DeltaChat",
+          "S Chat",
           "++++++++++++++++++ last ForegroundDetector.onActivityStopped() ++++++++++++++++++");
     }
   }

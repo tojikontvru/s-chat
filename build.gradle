@@ -31,7 +31,7 @@ android {
         versionCode 751
         versionName "2.53.0"
 
-        applicationId "com.b44t.messenger"
+        applicationId "tj.safarali.group.s.chat"
         multiDexEnabled true
 
         minSdkVersion 21
@@ -40,7 +40,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         // base name of the generated apk
-        project.ext.set("archivesBaseName", "deltachat");
+        project.ext.set("archivesBaseName", "s-chat");
 
         buildConfigField "boolean", "DEV_BUILD", "false"
 
@@ -128,7 +128,7 @@ android {
         }
         gplay {
             dimension "none"
-            applicationId "chat.delta"
+            applicationId "tj.safarali.group.s.chat"
             apply plugin: "com.google.gms.google-services"
             buildConfigField "boolean", "USE_PLAY_SERVICES", "true"
         }
@@ -137,7 +137,7 @@ android {
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = outputFileName
-                    .replace("deltachat-android", "deltachat")
+                    .replace("s-chat-android", "s-chat")
                     .replace(".apk", "-${variant.versionName}.apk")
         }
     }

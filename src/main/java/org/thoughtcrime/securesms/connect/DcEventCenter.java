@@ -144,7 +144,7 @@ public class DcEventCenter {
   private void handleError(int event, String string) {
     // log error
     boolean showAsToast;
-    Log.e("DeltaChat", string);
+    Log.e("S Chat", string);
     synchronized (lastErrorLock) {
       showAsToast = showNextErrorAsToast;
       showNextErrorAsToast = true;
@@ -173,15 +173,15 @@ public class DcEventCenter {
     final String logPrefix = "[accId=" + event.getAccountId() + "] ";
     switch (event.getId()) {
       case DcContext.DC_EVENT_INFO:
-        Log.i("DeltaChat", logPrefix + event.getData2Str());
+        Log.i("S Chat", logPrefix + event.getData2Str());
         break;
 
       case DcContext.DC_EVENT_WARNING:
-        Log.w("DeltaChat", logPrefix + event.getData2Str());
+        Log.w("S Chat", logPrefix + event.getData2Str());
         break;
 
       case DcContext.DC_EVENT_ERROR:
-        Log.e("DeltaChat", logPrefix + event.getData2Str());
+        Log.e("S Chat", logPrefix + event.getData2Str());
         break;
     }
   }

@@ -172,18 +172,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Android's scheme matcher is case-sensitive, so include most likely variations -->
-                <data android:scheme="openpgp4fpr" />
+                <data android:scheme="dc-schat" />
                 <data
-                    android:scheme="OPENPGP4FPR"
+                    android:scheme="DC-SCHAT"
                     tools:ignore="AppLinkUrlError" />
                 <data
-                    android:scheme="OpenPGP4FPR"
+                    android:scheme="Dc-Schat"
                     tools:ignore="AppLinkUrlError" />
                 <data
-                    android:scheme="OpenPGP4Fpr"
+                    android:scheme="Dc-SchAT"
                     tools:ignore="AppLinkUrlError" />
                 <data
-                    android:scheme="OpenPGP4fpr"
+                    android:scheme="dc-Schat"
                     tools:ignore="AppLinkUrlError" />
             </intent-filter>
 
@@ -193,7 +193,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="i.delta.chat" />
+                    android:host="s.safari.chat" />
             </intent-filter>
 
             <meta-data

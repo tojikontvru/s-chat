@@ -151,7 +151,7 @@ public class ApplicationContext extends MultiDexApplication {
     // }
     // LeakCanary.install(this);
 
-    Log.i("DeltaChat", "++++++++++++++++++ ApplicationContext.onCreate() ++++++++++++++++++");
+    Log.i("S Chat", "++++++++++++++++++ ApplicationContext.onCreate() ++++++++++++++++++");
 
     System.loadLibrary("native-utils");
 
@@ -180,7 +180,7 @@ public class ApplicationContext extends MultiDexApplication {
                             eventCenter.handleLogging(event);
                           }
                         }
-                        Log.i("DeltaChat", "shutting down event handler");
+                        Log.i("S Chat", "shutting down event handler");
                       },
                       "eventThread")
                   .start();
@@ -273,7 +273,7 @@ public class ApplicationContext extends MultiDexApplication {
             @Override
             public void onAvailable(@NonNull android.net.Network network) {
               Log.i(
-                  "DeltaChat",
+                  "S Chat",
                   "++++++++++++++++++ NetworkCallback.onAvailable() #" + debugOnAvailableCount++);
               // onBlockedStatusChanged is only available on API 29+
               if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -285,7 +285,7 @@ public class ApplicationContext extends MultiDexApplication {
             public void onBlockedStatusChanged(
                 @NonNull android.net.Network network, boolean blocked) {
               Log.i(
-                  "DeltaChat",
+                  "S Chat",
                   "++++++++++++++++++ NetworkCallback.onBlockedStatusChanged("
                       + blocked
                       + ") #"
@@ -300,7 +300,7 @@ public class ApplicationContext extends MultiDexApplication {
                 @NonNull android.net.Network network, NetworkCapabilities networkCapabilities) {
               // usually called after onAvailable(), so a maybeNetwork seems contraproductive
               Log.i(
-                  "DeltaChat",
+                  "S Chat",
                   "++++++++++++++++++ NetworkCallback.onCapabilitiesChanged() #"
                       + debugOnCapabilitiesChangedCount++);
             }
@@ -309,7 +309,7 @@ public class ApplicationContext extends MultiDexApplication {
             public void onLinkPropertiesChanged(
                 @NonNull android.net.Network network, LinkProperties linkProperties) {
               Log.i(
-                  "DeltaChat",
+                  "S Chat",
                   "++++++++++++++++++ NetworkCallback.onLinkPropertiesChanged() #"
                       + debugOnLinkPropertiesChangedCount++);
             }
@@ -385,7 +385,7 @@ public class ApplicationContext extends MultiDexApplication {
             ExistingPeriodicWorkPolicy.KEEP,
             webxdcGarbageCollectionRequest);
 
-    Log.i("DeltaChat", "+++++++++++ ApplicationContext.onCreate() finished ++++++++++");
+    Log.i("S Chat", "+++++++++++ ApplicationContext.onCreate() finished ++++++++++");
   }
 
   @Override

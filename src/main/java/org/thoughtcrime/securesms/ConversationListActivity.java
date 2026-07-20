@@ -90,7 +90,7 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 public class ConversationListActivity extends PassphraseRequiredActionBarActivity
     implements ConversationListFragment.ConversationSelectedListener {
   private static final String TAG = "ConversationListActivity";
-  private static final String OPENPGP4FPR = "openpgp4fpr";
+  private static final String DC_SCHAT = "dc-schat";
   private static final String NDK_ARCH_WARNED = "ndk_arch_warned";
   public static final String CLEAR_NOTIFICATIONS = "clear_notifications";
   public static final String ACCOUNT_ID_EXTRA = "account_id";
@@ -594,7 +594,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
         return;
       }
 
-      if (uri.getScheme().equalsIgnoreCase(OPENPGP4FPR) || Util.isInviteURL(uri)) {
+      if (uri.getScheme().equalsIgnoreCase(DC_SCHAT) || Util.isInviteURL(uri)) {
         QrCodeHandler qrCodeHandler = new QrCodeHandler(this);
         qrCodeHandler.handleOnlySecureJoinQr(uri.toString(), SecurejoinSource.ExternalLink, null);
       }
@@ -751,7 +751,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       AccountManager.getInstance().showSwitchAccountMenu(this, false);
     }
 
-    // title update needed to show "Delta Chat" in case there is only one profile left
+    // title update needed to show "S Chat" in case there is only one profile left
     refreshTitle();
   }
 
