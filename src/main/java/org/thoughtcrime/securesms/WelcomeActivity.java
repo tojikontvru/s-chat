@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,6 +68,16 @@ public class WelcomeActivity extends BaseActionBarActivity
 
     Button signUpButton = findViewById(R.id.signup_button);
     Button signInButton = findViewById(R.id.signin_button);
+
+    Button providerGmail = findViewById(R.id.provider_gmail);
+    Button providerYandex = findViewById(R.id.provider_yandex);
+    Button providerMailru = findViewById(R.id.provider_mailru);
+    Button providerVk = findViewById(R.id.provider_vk);
+
+    providerGmail.setOnClickListener(v -> openProviderLogin("gmail.com", "Google\n1. Используйте пароль приложения (App Password)\n2. Включите 2FA в аккаунте Google\n3. Создайте пароль: https://myaccount.google.com/apppasswords"));
+    providerYandex.setOnClickListener(v -> openProviderLogin("yandex.ru", "Яндекс\n1. Войдите в Яндекс ID\n2. Используйте обычный пароль от почты\n3. Либо пароль приложения для почты"));
+    providerMailru.setOnClickListener(v -> openProviderLogin("mail.ru", "Mail.ru\n1. Используйте пароль приложения\n2. Настройки → Безопасность → Пароли для внешних приложений\n3. Создайте пароль для IMAP/SMTP"));
+    providerVk.setOnClickListener(v -> openProviderLogin("vk.com", "VK\n1. Используйте адрес VK Почты\n2. Пароль от VK или пароль приложения\n3. В настройках почты включите IMAP"));
 
     View view = View.inflate(this, R.layout.login_options_view, null);
     AlertDialog signInDialog =
@@ -135,6 +146,19 @@ public class WelcomeActivity extends BaseActionBarActivity
       startAddAsSecondDeviceActivity();
       signInDialog.dismiss();
     }
+  }
+
+  private void openProviderLogin(String domain, String hint) {
+    new AlertDialog.Builder(this)
+        .setTitle("Вход через " + domain)
+        .setMessage(hint)
+        .setPositiveButton("Продолжить", (d, w) -> {
+          Intent intent = new Intent(this, org.thoughtcrime.securesms.relay.EditRelayActivity.class);
+          intent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_ADDR, "@" + domain);
+          startActivity(intent);
+        })
+        .setNegativeButton(R.string.cancel, null)
+        .show();
   }
 
   protected void initializeActionBar() {

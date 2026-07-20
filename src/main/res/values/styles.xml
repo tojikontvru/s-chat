@@ -116,6 +116,16 @@
         <item name="android:background">@drawable/button_secondary_background</item>
     </style>
 
+    <style name="ButtonProvider">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?attr/secondary_button_fg</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_secondary_background</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
     <style
         name="PreferenceThemeOverlay.Fix"
         parent="PreferenceThemeOverlay.v14.Material">

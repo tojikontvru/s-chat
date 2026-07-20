@@ -545,7 +545,7 @@ public class Rpc {
 
   /**
    * Get QR code (text and SVG) that will offer a Setup-Contact or Verified-Group invitation.
-   * The QR code is compatible to the OPENPGP4FPR format
+   * The QR code is compatible to the dc-schat format
    * so that a basic fingerprint comparison also works e.g. with OpenKeychain.
    * <p>
    * The scanning device will pass the scanned content to `checkQr()` then;

@@ -707,6 +707,7 @@
     <string name="instant_onboarding_confirm_group">Создать новый профиль и присоединиться к \"%1$s\"?</string>
 
     <string name="welcome_chat_over_email">Безопасный децентрализованный чат</string>
+    <string name="welcome_or_login_with">— или войти через —</string>
     <string name="scan_invitation_code">Сканировать код приглашения</string>
     <string name="login_title">Войти</string>
     <string name="login_advanced_hint">Этот способ входа предназначен для опытных пользователей.\n\nНе используйте адрес, который вы уже используете в другом приложении.</string>
