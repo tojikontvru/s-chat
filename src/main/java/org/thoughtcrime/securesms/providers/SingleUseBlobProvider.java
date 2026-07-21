@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class SingleUseBlobProvider {
 
-  public static final String AUTHORITY = "chat.safarali";
+  public static final String AUTHORITY = "tj.safarali.schat";
   public static final String PATH = "memory/*/#";
 
   private final Map<Long, byte[]> cache = new HashMap<>();

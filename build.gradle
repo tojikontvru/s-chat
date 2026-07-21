@@ -35,7 +35,7 @@ android {
         // versionName: MAJOR.MINOR.PATCH
         versionName "1.0.0"
 
-        applicationId "chat.safarali"
+        applicationId "tj.safarali.schat"
         multiDexEnabled true
 
         // Load OAuth2 credentials from secrets.properties if it exists
@@ -147,7 +147,7 @@ android {
         }
         gplay {
             dimension "none"
-        applicationId "chat.safarali"
+        applicationId "tj.safarali.schat"
             apply plugin: "com.google.gms.google-services"
             buildConfigField "boolean", "USE_PLAY_SERVICES", "true"
         }

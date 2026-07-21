@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:922391085500:android:938fa7a685ce74ba3e2bb9",
         "android_client_info": {
-          "package_name": "chat.safarali"
+          "package_name": "tj.safarali.schat"
         }
       },
       "oauth_client": [],
@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:922391085500:android:92b4cf12669cc2083e2bb9",
         "android_client_info": {
-          "package_name": "chat.safarali"
+          "package_name": "tj.safarali.schat"
         }
       },
       "oauth_client": [],

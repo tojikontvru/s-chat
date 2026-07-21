@@ -26,9 +26,9 @@ public class PersistentBlobProvider {
 
   private static final String TAG = "PersistentBlobProvider";
 
-  private static final String URI_STRING = "content://chat.safarali/capture-new";
+  private static final String URI_STRING = "content://tj.safarali.schat/capture-new";
   public static final Uri CONTENT_URI = Uri.parse(URI_STRING);
-  public static final String AUTHORITY = "chat.safarali";
+  public static final String AUTHORITY = "tj.safarali.schat";
   public static final String EXPECTED_PATH_OLD = "capture/*/*/#";
   public static final String EXPECTED_PATH_NEW = "capture-new/*/*/*/*/#";
 
