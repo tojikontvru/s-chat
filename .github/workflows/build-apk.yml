@@ -61,13 +61,14 @@ jobs:
         if: github.event.inputs.build_type == 'release' || github.event.inputs.build_type == ''
         run: |
           keytool -genkey -v \
-            -keystore ${{ github.workspace }}/s-chat/release.keystore \
+            -keystore release.keystore \
             -alias schat \
             -keyalg RSA -keysize 2048 \
             -validity 10000 \
             -storepass schat123456 \
             -keypass schat123456 \
             -dname "CN=Safarali Group, OU=Dev, O=Safarali, L=Dushanbe, ST=TJ, C=TJ"
+          ls -la release.keystore
 
       - name: Build APK
         run: |
@@ -92,4 +93,4 @@ jobs:
 
       - name: Cleanup keystore
         if: always()
-        run: rm -f ${{ github.workspace }}/s-chat/release.keystore
+        run: rm -f release.keystore
