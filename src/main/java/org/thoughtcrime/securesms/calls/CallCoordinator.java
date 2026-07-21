@@ -84,7 +84,7 @@ public class CallCoordinator implements DcEventCenter.DcEventDelegate {
   private static final int PI_HANGUP = 3;
   private static final int PI_ONGOING_CONTENT = 4;
 
-  private static final String CALL_IDENTIFIER_SCHEME = "deltachat:";
+  private static final String CALL_IDENTIFIER_SCHEME = "schat:";
 
   private static CallCoordinator instance;
   private final Context appContext;

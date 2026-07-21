@@ -14,7 +14,7 @@ on:
       build_type:
         description: 'Build type'
         required: true
-        default: 'debug'
+        default: 'release'
         type: choice
         options:
           - debug
@@ -42,7 +42,7 @@ jobs:
           echo "=== S Chat Build ==="
           echo "Version: $VERSION_NAME (code: $VERSION_CODE)"
           echo "Flavor: ${{ github.event.inputs.flavor || 'foss' }}"
-          echo "Build type: ${{ github.event.inputs.build_type || 'debug' }}"
+          echo "Build type: ${{ github.event.inputs.build_type || 'release' }}"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -57,15 +57,39 @@ jobs:
         run: |
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
+      - name: Generate signing keystore
+        if: github.event.inputs.build_type == 'release' || github.event.inputs.build_type == ''
+        run: |
+          keytool -genkey -v \
+            -keystore release.keystore \
+            -alias schat \
+            -keyalg RSA -keysize 2048 \
+            -validity 10000 \
+            -storepass schat123456 \
+            -keypass schat123456 \
+            -dname "CN=Safarali Group, OU=Dev, O=Safarali, L=Dushanbe, ST=TJ, C=TJ"
+
       - name: Build APK
         run: |
           FLAVOR="${{ github.event.inputs.flavor || 'foss' }}"
-          BUILD_TYPE="${{ github.event.inputs.build_type || 'debug' }}"
-          ./gradlew assemble${FLAVOR^}${BUILD_TYPE^} --no-daemon
+          BUILD_TYPE="${{ github.event.inputs.build_type || 'release' }}"
+          if [ "$BUILD_TYPE" = "release" ]; then
+            ./gradlew assemble${FLAVOR^}${BUILD_TYPE^} --no-daemon \
+              -PDC_RELEASE_STORE_FILE=../release.keystore \
+              -PDC_RELEASE_STORE_PASSWORD=schat123456 \
+              -PDC_RELEASE_KEY_ALIAS=schat \
+              -PDC_RELEASE_KEY_PASSWORD=schat123456
+          else
+            ./gradlew assemble${FLAVOR^}${BUILD_TYPE^} --no-daemon
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: s-chat-v${{ steps.version.outputs.version_name }}-${{ github.event.inputs.build_type || 'debug' }}
+          name: s-chat-v${{ steps.version.outputs.version_name }}-${{ github.event.inputs.build_type || 'release' }}
           path: build/outputs/apk/**/*.apk
           if-no-files-found: error
+
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f release.keystore
