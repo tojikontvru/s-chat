@@ -33,6 +33,7 @@ import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.AttachmentManager;
+import org.thoughtcrime.securesms.oauth.OAuthActivity;
 import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.qr.BackupTransferActivity;
 import org.thoughtcrime.securesms.qr.QrCodeHandler;
@@ -50,6 +51,7 @@ public class WelcomeActivity extends BaseActionBarActivity
     implements DcEventCenter.DcEventDelegate {
   public static final String BACKUP_QR_EXTRA = "backup_qr_extra";
   public static final int PICK_BACKUP = 20574;
+  private static final int REQUEST_OAUTH = 30001;
   private static final String TAG = "WelcomeActivity";
   public static final String TMP_BACKUP_FILE = "tmp-backup-file";
 
@@ -57,6 +59,7 @@ public class WelcomeActivity extends BaseActionBarActivity
   private boolean imexUserAborted;
   DcContext dcContext;
   private NotificationController notificationController;
+  private String oauthDomain;
 
   @Override
   public void onCreate(Bundle bundle) {
@@ -74,10 +77,10 @@ public class WelcomeActivity extends BaseActionBarActivity
     Button providerMailru = findViewById(R.id.provider_mailru);
     Button providerVk = findViewById(R.id.provider_vk);
 
-    providerGmail.setOnClickListener(v -> openProviderLogin("gmail.com", "Google\n1. Используйте пароль приложения (App Password)\n2. Включите 2FA в аккаунте Google\n3. Создайте пароль: https://myaccount.google.com/apppasswords"));
-    providerYandex.setOnClickListener(v -> openProviderLogin("yandex.ru", "Яндекс\n1. Войдите в Яндекс ID\n2. Используйте обычный пароль от почты\n3. Либо пароль приложения для почты"));
-    providerMailru.setOnClickListener(v -> openProviderLogin("mail.ru", "Mail.ru\n1. Используйте пароль приложения\n2. Настройки → Безопасность → Пароли для внешних приложений\n3. Создайте пароль для IMAP/SMTP"));
-    providerVk.setOnClickListener(v -> openProviderLogin("vk.com", "VK\n1. Используйте адрес VK Почты\n2. Пароль от VK или пароль приложения\n3. В настройках почты включите IMAP"));
+    providerGmail.setOnClickListener(v -> startOAuth("gmail.com"));
+    providerYandex.setOnClickListener(v -> startOAuth("yandex.ru"));
+    providerMailru.setOnClickListener(v -> startOAuth("mail.ru"));
+    providerVk.setOnClickListener(v -> startOAuth("vk.com"));
 
     View view = View.inflate(this, R.layout.login_options_view, null);
     AlertDialog signInDialog =
@@ -148,17 +151,34 @@ public class WelcomeActivity extends BaseActionBarActivity
     }
   }
 
-  private void openProviderLogin(String domain, String hint) {
-    new AlertDialog.Builder(this)
-        .setTitle("Вход через " + domain)
-        .setMessage(hint)
-        .setPositiveButton("Продолжить", (d, w) -> {
-          Intent intent = new Intent(this, org.thoughtcrime.securesms.relay.EditRelayActivity.class);
-          intent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_ADDR, "@" + domain);
-          startActivity(intent);
-        })
-        .setNegativeButton(R.string.cancel, null)
-        .show();
+  private void startOAuth(String domain) {
+    oauthDomain = domain;
+    Intent intent = new Intent(this, OAuthActivity.class);
+    intent.putExtra(OAuthActivity.EXTRA_PROVIDER, domain);
+    startActivityForResult(intent, REQUEST_OAUTH);
+  }
+
+  private void handleOAuthResult(int resultCode, Intent data) {
+    if (resultCode != RESULT_OK || data == null) return;
+
+    String email = data.getStringExtra(OAuthActivity.RESULT_EMAIL);
+    String accessToken = data.getStringExtra(OAuthActivity.RESULT_ACCESS_TOKEN);
+
+    if (email != null && !email.contains("@")) {
+      String domain = oauthDomain;
+      if (domain != null) {
+        email = email + "@" + domain;
+      }
+    }
+
+    Intent editIntent = new Intent(this, org.thoughtcrime.securesms.relay.EditRelayActivity.class);
+    if (email != null) {
+      editIntent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_ADDR, email);
+    }
+    if (accessToken != null) {
+      editIntent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_PW, accessToken);
+    }
+    startActivity(editIntent);
   }
 
   protected void initializeActionBar() {
@@ -414,6 +434,11 @@ public class WelcomeActivity extends BaseActionBarActivity
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == REQUEST_OAUTH) {
+      handleOAuthResult(resultCode, data);
+      return;
+    }
 
     if (resultCode != RESULT_OK) {
       return;

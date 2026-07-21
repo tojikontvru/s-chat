@@ -28,6 +28,7 @@ test/androidTestEspresso/res/values/arrays.xml
 obj/
 jni/libspeex/.deps/
 ndkArch
+secrets.properties
 
 # ignore debug symbols created by ./tools/upload-release.sh
 *-symbols.zip

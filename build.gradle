@@ -38,6 +38,22 @@ android {
         applicationId "tj.safarali.schat"
         multiDexEnabled true
 
+        // Load OAuth2 credentials from secrets.properties if it exists
+        def secretsFile = rootProject.file('secrets.properties')
+        def secrets = new Properties()
+        if (secretsFile.exists()) {
+            secrets.load(new FileInputStream(secretsFile))
+        }
+
+        buildConfigField "String", "OAUTH_GOOGLE_CLIENT_ID", "\"${secrets.getProperty('OAUTH_GOOGLE_CLIENT_ID', '')}\""
+        buildConfigField "String", "OAUTH_GOOGLE_CLIENT_SECRET", "\"${secrets.getProperty('OAUTH_GOOGLE_CLIENT_SECRET', '')}\""
+        buildConfigField "String", "OAUTH_YANDEX_CLIENT_ID", "\"${secrets.getProperty('OAUTH_YANDEX_CLIENT_ID', '')}\""
+        buildConfigField "String", "OAUTH_YANDEX_CLIENT_SECRET", "\"${secrets.getProperty('OAUTH_YANDEX_CLIENT_SECRET', '')}\""
+        buildConfigField "String", "OAUTH_MAILRU_CLIENT_ID", "\"${secrets.getProperty('OAUTH_MAILRU_CLIENT_ID', '')}\""
+        buildConfigField "String", "OAUTH_MAILRU_CLIENT_SECRET", "\"${secrets.getProperty('OAUTH_MAILRU_CLIENT_SECRET', '')}\""
+        buildConfigField "String", "OAUTH_VK_CLIENT_ID", "\"${secrets.getProperty('OAUTH_VK_CLIENT_ID', '')}\""
+        buildConfigField "String", "OAUTH_VK_CLIENT_SECRET", "\"${secrets.getProperty('OAUTH_VK_CLIENT_SECRET', '')}\""
+
         minSdkVersion 21
         targetSdkVersion 36
 

@@ -274,6 +274,19 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize" />
 
         <activity
+            android:name=".oauth.OAuthActivity"
+            android:theme="@style/TextSecure.LightNoActionBar"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="s-oauth" android:host="callback" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".relay.EditRelayActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateUnchanged"

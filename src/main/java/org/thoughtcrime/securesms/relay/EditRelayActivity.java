@@ -57,8 +57,9 @@ public class EditRelayActivity extends BaseActionBarActivity
     PORT,
   }
 
-  private static final String TAG = "EditRelayActivity";
   public static final String EXTRA_ADDR = "extra_addr";
+  public static final String EXTRA_PW = "extra_pw";
+  private static final String TAG = "EditRelayActivity";
 
   private TextInputEditText emailInput;
   private TextInputEditText passwordInput;
@@ -233,6 +234,11 @@ public class EditRelayActivity extends BaseActionBarActivity
       intVal = certificateChecksToInt(config.certificateChecks);
       certCheck.setSelection(ViewUtil.checkBounds(intVal, certCheck));
       expandAdvanced = expandAdvanced || intVal != 0;
+    } else {
+      String extraPw = getIntent().getStringExtra(EXTRA_PW);
+      if (!TextUtils.isEmpty(extraPw)) {
+        passwordInput.setText(extraPw);
+      }
     }
 
     if (expandAdvanced) {
