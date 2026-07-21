@@ -22,7 +22,7 @@ public class BrowserOAuth {
 
   public static void startFlow(Activity activity, String authUrl, Callback callback) {
     try {
-      ServerSocket serverSocket = new ServerSocket(0, 1, java.net.InetAddress.getByName("127.0.0.1"));
+      ServerSocket serverSocket = new ServerSocket(49357, 1, java.net.InetAddress.getByName("127.0.0.1"));
       int port = serverSocket.getLocalPort();
       String redirectUri = "http://localhost:" + port + "/";
 
