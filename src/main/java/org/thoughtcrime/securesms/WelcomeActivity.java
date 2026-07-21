@@ -33,6 +33,7 @@ import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.AttachmentManager;
+import org.thoughtcrime.securesms.oauth.BrowserOAuth;
 import org.thoughtcrime.securesms.oauth.OAuthActivity;
 import org.thoughtcrime.securesms.oauth.OAuthConfig;
 import org.thoughtcrime.securesms.oauth.OAuthHelper;
@@ -156,15 +157,6 @@ public class WelcomeActivity extends BaseActionBarActivity
   private void startOAuth(String domain) {
     oauthDomain = domain;
 
-    // Google: WebView (Google doesn't accept custom scheme redirects)
-    if ("gmail.com".equals(domain)) {
-      Intent intent = new Intent(this, OAuthActivity.class);
-      intent.putExtra(OAuthActivity.EXTRA_PROVIDER, domain);
-      startActivityForResult(intent, REQUEST_OAUTH);
-      return;
-    }
-
-    // Yandex/Mail.ru/VK: open browser
     OAuthConfig.Provider provider = OAuthConfig.getProvider(domain);
     if (provider == null) return;
 
@@ -173,11 +165,39 @@ public class WelcomeActivity extends BaseActionBarActivity
     String state = OAuthHelper.getState();
     OAuthHelper.storeSession(state, domain, codeVerifier);
 
+    // Google: Chrome Custom Tab with local server
+    if ("gmail.com".equals(domain)) {
+      String baseAuthUrl = provider.authUrl
+        + "?client_id=" + Uri.encode(provider.clientId)
+        + "&response_type=code"
+        + "&scope=" + Uri.encode(provider.scope)
+        + "&state=" + Uri.encode(state)
+        + "&code_challenge=" + Uri.encode(codeChallenge)
+        + "&code_challenge_method=S256"
+        + "&access_type=offline"
+        + "&prompt=consent";
+
+      BrowserOAuth.startFlow(this, baseAuthUrl, new BrowserOAuth.Callback() {
+        @Override
+        public void onResult(String code, String returnedState) {
+          OAuthHelper.OAuthSession session = OAuthHelper.getSession(returnedState);
+          if (session == null || !session.codeVerifier.equals(codeVerifier)) return;
+          exchangeGoogleToken(code, codeVerifier, provider);
+        }
+
+        @Override
+        public void onError(String error) {
+          // silent fail
+        }
+      });
+      return;
+    }
+
+    // Yandex/Mail.ru/VK: open browser
     String authUrl = OAuthHelper.buildAuthUrl(provider, codeChallenge, state);
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-    // Yandex → Yandex Browser, fallback Chrome
     if ("yandex.ru".equals(domain)) {
       browserIntent.setPackage("com.yandex.browser");
     } else {
@@ -185,6 +205,18 @@ public class WelcomeActivity extends BaseActionBarActivity
     }
 
     startActivity(browserIntent);
+  }
+
+  private void exchangeGoogleToken(final String code, final String codeVerifier, final OAuthConfig.Provider provider) {
+    new Thread(() -> {
+      try {
+        OAuthHelper.AuthResult result = OAuthHelper.exchangeCode(provider, code, codeVerifier);
+        OAuthHelper.storeResult(result, provider.name);
+        runOnUiThread(() -> checkPendingOAuthResult());
+      } catch (Exception e) {
+        // silent
+      }
+    }).start();
   }
 
   private void handleOAuthResult(int resultCode, Intent data) {
