@@ -57,17 +57,10 @@ jobs:
         run: |
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Generate signing keystore
+      - name: Decode keystore
         if: github.event.inputs.build_type == 'release' || github.event.inputs.build_type == ''
         run: |
-          keytool -genkey -v \
-            -keystore release.keystore \
-            -alias schat \
-            -keyalg RSA -keysize 2048 \
-            -validity 10000 \
-            -storepass schat123456 \
-            -keypass schat123456 \
-            -dname "CN=Safarali Group, OU=Dev, O=Safarali, L=Dushanbe, ST=TJ, C=TJ"
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
           ls -la release.keystore
 
       - name: Build APK
@@ -77,9 +70,9 @@ jobs:
           if [ "$BUILD_TYPE" = "release" ]; then
             ./gradlew assemble${FLAVOR^}${BUILD_TYPE^} --no-daemon \
               -PDC_RELEASE_STORE_FILE=release.keystore \
-              -PDC_RELEASE_STORE_PASSWORD=schat123456 \
-              -PDC_RELEASE_KEY_ALIAS=schat \
-              -PDC_RELEASE_KEY_PASSWORD=schat123456
+              -PDC_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
+              -PDC_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }} \
+              -PDC_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
           else
             ./gradlew assemble${FLAVOR^}${BUILD_TYPE^} --no-daemon
           fi
