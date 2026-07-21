@@ -29,6 +29,7 @@ obj/
 jni/libspeex/.deps/
 ndkArch
 secrets.properties
+apk-download/
 
 # ignore debug symbols created by ./tools/upload-release.sh
 *-symbols.zip
