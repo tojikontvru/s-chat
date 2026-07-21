@@ -2,6 +2,8 @@ package org.thoughtcrime.securesms.oauth;
 
 import androidx.annotation.Nullable;
 
+import org.thoughtcrime.securesms.BuildConfig;
+
 public class OAuthConfig {
 
   public static class Provider {
