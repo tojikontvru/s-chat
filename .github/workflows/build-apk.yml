@@ -61,7 +61,7 @@ jobs:
         if: github.event.inputs.build_type == 'release' || github.event.inputs.build_type == ''
         run: |
           keytool -genkey -v \
-            -keystore release.keystore \
+            -keystore ${{ github.workspace }}/s-chat/release.keystore \
             -alias schat \
             -keyalg RSA -keysize 2048 \
             -validity 10000 \
@@ -75,7 +75,7 @@ jobs:
           BUILD_TYPE="${{ github.event.inputs.build_type || 'release' }}"
           if [ "$BUILD_TYPE" = "release" ]; then
             ./gradlew assemble${FLAVOR^}${BUILD_TYPE^} --no-daemon \
-              -PDC_RELEASE_STORE_FILE=../release.keystore \
+              -PDC_RELEASE_STORE_FILE=release.keystore \
               -PDC_RELEASE_STORE_PASSWORD=schat123456 \
               -PDC_RELEASE_KEY_ALIAS=schat \
               -PDC_RELEASE_KEY_PASSWORD=schat123456
@@ -92,4 +92,4 @@ jobs:
 
       - name: Cleanup keystore
         if: always()
-        run: rm -f release.keystore
+        run: rm -f ${{ github.workspace }}/s-chat/release.keystore
