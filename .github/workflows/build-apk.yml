@@ -36,7 +36,7 @@ jobs:
         id: version
         run: |
           VERSION_CODE=$(git rev-list --count HEAD)
-          VERSION_NAME=$(grep 'versionName' build.gradle | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          VERSION_NAME=$(grep 'versionName "' build.gradle | head -1 | sed 's/.*"\(.*\)".*/\1/')
           echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
           echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
           echo "=== S Chat Build ==="
