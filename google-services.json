@@ -34,25 +34,6 @@
           ]
         }
       }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:623406648876:android:test00000000000002",
-        "android_client_info": {
-          "package_name": "com.test.installcheck"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyANAfyYlpV_nc-8LqcOgKsTtLslma0Sbjw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
     }
   ],
   "configuration_version": "1"
