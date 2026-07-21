@@ -1003,7 +1003,7 @@
     <string name="notifications_disabled">اعلان‌ها غیرفعال شد</string>
     <string name="unreliable_bg_notifications">فعال‌سازی «اتصال پس‌زمینه اجباری» برای این‌که همیشه اعلان‌ها برسند</string>
     <string name="new_messages">پیام‌های جدید</string>
-    <!-- Body text for a generic "New messages" notification. Shown if we do not have more information about a new messages. Note, that the string is also referenced at https://github.com/deltachat/notifiers -->
+    <!-- Body text for a generic "New messages" notification. Shown if we do not have more information about a new messages. Note, that the string is also referenced at https://github.com/S Chat/notifiers -->
     <string name="new_messages_body">شما پیام‌های جدیدی دارید</string>
     <string name="n_messages_in_m_chats">%1$d پیام در %2$d گفتگو</string>
 
@@ -1122,7 +1122,7 @@
     <string name="remove_from_widget">حذف از ابزارک</string>
     <!-- use the same translation for "Widget" as the system is using; often the term "Widget" stays untranslated -->
     <string name="add_to_widget">اضافه کردن به ابزارک</string>
-    <!-- iOS permissions, copy from "deltachat-ios/Info.plist", which is used on missing translations in "deltachat-ios/LANG.lproj/InfoPlist.strings" -->
+    <!-- iOS permissions, copy from "S Chat-ios/Info.plist", which is used on missing translations in "S Chat-ios/LANG.lproj/InfoPlist.strings" -->
     <string name="InfoPlist_NSCameraUsageDescription">دلتاچت برای گرفتن و ارسال عکس و فیلم و برای اسکن کردن کیوآر کد از دوربین شما استفاده می‌کند. </string>
     <string name="InfoPlist_NSLocationAlwaysAndWhenInUseUsageDescription">دلتاچت برای هم‌رسانی مکان شما در زمانی که آن به کار انداخته‌اید، به مجوز نیاز دارد. </string>
     <string name="InfoPlist_NSLocationWhenInUseUsageDescription">دلتاچت برای اشتراک موقعیت مکانی شما در زمانی که اشتراک موقعیت مکانی را فعال کرده‌ باشید به مجوز نیاز دارد. </string>
