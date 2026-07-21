@@ -1,45 +1,37 @@
 {
   "project_info": {
-    "project_number": "922391085500",
-    "project_id": "delta-chat-fcm",
-    "storage_bucket": "delta-chat-fcm.appspot.com"
+    "project_number": "623406648876",
+    "firebase_url": "https://tojikon-tv-default-rtdb.firebaseio.com",
+    "project_id": "tojikon-tv",
+    "storage_bucket": "tojikon-tv.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:922391085500:android:938fa7a685ce74ba3e2bb9",
+        "mobilesdk_app_id": "1:623406648876:android:73715b1ca64ce50cdb0b89",
         "android_client_info": {
           "package_name": "tj.safarali.schat"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "623406648876-inf890l4nnp0veegs0a73ruf7d07a266.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBYH8Iznh8btYX7g_udv_bu68VH30zzxho"
+          "current_key": "AIzaSyANAfyYlpV_nc-8LqcOgKsTtLslma0Sbjw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:922391085500:android:92b4cf12669cc2083e2bb9",
-        "android_client_info": {
-          "package_name": "tj.safarali.schat"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBYH8Iznh8btYX7g_udv_bu68VH30zzxho"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "623406648876-4v5b3f31imbl76rruj8a5415ek9h676k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
