@@ -29,6 +29,7 @@ public class OAuthConfig {
   }
 
   public static final String REDIRECT_URI = "s-oauth://callback";
+  public static final String GOOGLE_REDIRECT_URI = "http://localhost";
 
   // =========================================================
   // ВСТАВЬ СВОИ CLIENT ID И CLIENT SECRET В secrets.properties

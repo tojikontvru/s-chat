@@ -67,7 +67,8 @@ public class OAuthActivity extends AppCompatActivity {
   }
 
   private void handleRedirect(String url) {
-    if (url == null || !url.startsWith(OAuthConfig.REDIRECT_URI)) return;
+    if (url == null) return;
+    if (!url.startsWith(OAuthConfig.REDIRECT_URI) && !url.startsWith(OAuthConfig.GOOGLE_REDIRECT_URI)) return;
 
     Uri uri = android.net.Uri.parse(url);
     String code = uri.getQueryParameter("code");

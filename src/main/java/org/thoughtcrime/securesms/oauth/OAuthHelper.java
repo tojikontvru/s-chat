@@ -42,9 +42,10 @@ public class OAuthHelper {
   }
 
   public static String buildAuthUrl(OAuthConfig.Provider provider, String codeChallenge, String state) {
+    String redirectUri = isGoogleProvider(provider) ? OAuthConfig.GOOGLE_REDIRECT_URI : OAuthConfig.REDIRECT_URI;
     return provider.authUrl
       + "?client_id=" + Uri.encode(provider.clientId)
-      + "&redirect_uri=" + Uri.encode(OAuthConfig.REDIRECT_URI)
+      + "&redirect_uri=" + Uri.encode(redirectUri)
       + "&response_type=code"
       + "&scope=" + Uri.encode(provider.scope)
       + "&state=" + Uri.encode(state)
@@ -54,8 +55,13 @@ public class OAuthHelper {
       + "&prompt=consent";
   }
 
+  private static boolean isGoogleProvider(OAuthConfig.Provider provider) {
+    return "gmail.com".equals(provider.name);
+  }
+
   public static AuthResult exchangeCode(OAuthConfig.Provider provider, String code, String codeVerifier) {
     try {
+      String redirectUri = isGoogleProvider(provider) ? OAuthConfig.GOOGLE_REDIRECT_URI : OAuthConfig.REDIRECT_URI;
       URL url = new URL(provider.tokenUrl);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("POST");
@@ -64,7 +70,7 @@ public class OAuthHelper {
 
       String body = "grant_type=authorization_code"
         + "&code=" + Uri.encode(code)
-        + "&redirect_uri=" + Uri.encode(OAuthConfig.REDIRECT_URI)
+        + "&redirect_uri=" + Uri.encode(redirectUri)
         + "&client_id=" + Uri.encode(provider.clientId)
         + "&code_verifier=" + Uri.encode(codeVerifier);
       if (!provider.clientSecret.isEmpty()) {
