@@ -31,7 +31,7 @@ android {
         versionCode 751
         versionName "2.53.0"
 
-        applicationId "tj.safarali.group.s.chat"
+        applicationId "tj.safarali.schat"
         multiDexEnabled true
 
         minSdkVersion 21
