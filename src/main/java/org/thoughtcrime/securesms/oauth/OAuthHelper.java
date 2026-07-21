@@ -66,8 +66,10 @@ public class OAuthHelper {
         + "&code=" + Uri.encode(code)
         + "&redirect_uri=" + Uri.encode(OAuthConfig.REDIRECT_URI)
         + "&client_id=" + Uri.encode(provider.clientId)
-        + "&client_secret=" + Uri.encode(provider.clientSecret)
         + "&code_verifier=" + Uri.encode(codeVerifier);
+      if (!provider.clientSecret.isEmpty()) {
+        body += "&client_secret=" + Uri.encode(provider.clientSecret);
+      }
 
       OutputStream os = conn.getOutputStream();
       os.write(body.getBytes(StandardCharsets.UTF_8));
@@ -99,8 +101,10 @@ public class OAuthHelper {
 
       String body = "grant_type=refresh_token"
         + "&refresh_token=" + Uri.encode(refreshToken)
-        + "&client_id=" + Uri.encode(provider.clientId)
-        + "&client_secret=" + Uri.encode(provider.clientSecret);
+        + "&client_id=" + Uri.encode(provider.clientId);
+      if (!provider.clientSecret.isEmpty()) {
+        body += "&client_secret=" + Uri.encode(provider.clientSecret);
+      }
 
       OutputStream os = conn.getOutputStream();
       os.write(body.getBytes(StandardCharsets.UTF_8));
