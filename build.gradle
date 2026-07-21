@@ -128,7 +128,7 @@ android {
         }
         gplay {
             dimension "none"
-            applicationId "tj.safarali.group.s.chat"
+        applicationId "tj.safarali.schat"
             apply plugin: "com.google.gms.google-services"
             buildConfigField "boolean", "USE_PLAY_SERVICES", "true"
         }
