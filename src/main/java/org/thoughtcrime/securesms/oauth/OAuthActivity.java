@@ -20,39 +20,67 @@ public class OAuthActivity extends AppCompatActivity {
   public static final String RESULT_REFRESH_TOKEN = "refresh_token";
   public static final String RESULT_EMAIL = "email";
 
-  private OAuthConfig.Provider provider;
-  private String codeVerifier;
-  private String state;
-  private WebView webView;
-  private ProgressBar progressBar;
+  private static final String GOOGLE_DOMAIN = "gmail.com";
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    Intent intent = getIntent();
+
+    // Mode 1: Browser redirect (s-oauth://callback)
+    if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
+      handleRedirect(intent.getData());
+      return;
+    }
+
+    // Mode 2: Google WebView flow
+    String domain = intent.getStringExtra(EXTRA_PROVIDER);
+    if (GOOGLE_DOMAIN.equals(domain)) {
+      startGoogleWebView(domain);
+    } else {
+      finish();
+    }
+  }
+
+  private void startGoogleWebView(String domain) {
     setContentView(R.layout.oauth_activity);
 
-    String domain = getIntent().getStringExtra(EXTRA_PROVIDER);
-    provider = OAuthConfig.getProvider(domain);
+    OAuthConfig.Provider provider = OAuthConfig.getProvider(domain);
     if (provider == null) {
       setResult(RESULT_CANCELED);
       finish();
       return;
     }
 
-    setTitle("Вход через " + provider.name);
+    setTitle(getString(R.string.app_name) + " — Google");
 
-    webView = findViewById(R.id.oauth_webview);
-    progressBar = findViewById(R.id.oauth_progress);
-
-    codeVerifier = OAuthHelper.generateCodeVerifier();
+    String codeVerifier = OAuthHelper.generateCodeVerifier();
     String codeChallenge = OAuthHelper.generateCodeChallenge(codeVerifier);
-    state = OAuthHelper.getState();
+    String state = OAuthHelper.getState();
+    OAuthHelper.storeSession(state, domain, codeVerifier);
+
+    WebView webView = findViewById(R.id.oauth_webview);
+    ProgressBar progressBar = findViewById(R.id.oauth_progress);
 
     webView.setWebViewClient(new WebViewClient() {
       @Override
       public void onPageStarted(WebView view, String url, Bitmap favicon) {
         progressBar.setVisibility(android.view.View.VISIBLE);
-        handleRedirect(url);
+        if (url.startsWith("http://localhost")) {
+          Uri uri = Uri.parse(url);
+          String code = uri.getQueryParameter("code");
+          String returnedState = uri.getQueryParameter("state");
+          if (code != null && returnedState != null) {
+            OAuthHelper.OAuthSession session = OAuthHelper.getSession(returnedState);
+            if (session != null) {
+              exchangeCode(code, session.codeVerifier, provider);
+              return;
+            }
+          }
+          setResult(RESULT_CANCELED);
+          finish();
+        }
       }
 
       @Override
@@ -66,47 +94,49 @@ public class OAuthActivity extends AppCompatActivity {
     webView.loadUrl(OAuthHelper.buildAuthUrl(provider, codeChallenge, state));
   }
 
-  private void handleRedirect(String url) {
-    if (url == null) return;
-    if (!url.startsWith(OAuthConfig.REDIRECT_URI) && !url.startsWith(OAuthConfig.GOOGLE_REDIRECT_URI)) return;
+  private void handleRedirect(Uri data) {
+    String code = data.getQueryParameter("code");
+    String returnedState = data.getQueryParameter("state");
 
-    Uri uri = android.net.Uri.parse(url);
-    String code = uri.getQueryParameter("code");
-    String returnedState = uri.getQueryParameter("state");
-
-    if (code != null && state.equals(returnedState)) {
-      exchangeCode(code);
-    } else {
+    if (code == null || returnedState == null) {
       setResult(RESULT_CANCELED);
       finish();
+      return;
     }
+
+    OAuthHelper.OAuthSession session = OAuthHelper.getSession(returnedState);
+    if (session == null) {
+      setResult(RESULT_CANCELED);
+      finish();
+      return;
+    }
+
+    OAuthConfig.Provider provider = OAuthConfig.getProvider(session.domain);
+    if (provider == null) {
+      setResult(RESULT_CANCELED);
+      finish();
+      return;
+    }
+
+    exchangeCode(code, session.codeVerifier, provider);
   }
 
-  private void exchangeCode(final String code) {
+  private void exchangeCode(final String code, final String codeVerifier, final OAuthConfig.Provider provider) {
     new Thread(() -> {
       try {
         OAuthHelper.AuthResult result = OAuthHelper.exchangeCode(provider, code, codeVerifier);
-        Intent intent = new Intent();
-        intent.putExtra(RESULT_ACCESS_TOKEN, result.accessToken);
-        intent.putExtra(RESULT_REFRESH_TOKEN, result.refreshToken);
-        intent.putExtra(RESULT_EMAIL, result.email);
-        setResult(RESULT_OK, intent);
+        OAuthHelper.storeResult(result, provider.name);
+        setResult(RESULT_OK);
       } catch (Exception e) {
-        Intent intent = new Intent();
-        intent.putExtra("error", e.getMessage());
-        setResult(RESULT_CANCELED, intent);
+        setResult(RESULT_CANCELED);
       }
-      runOnUiThread(() -> finish());
+      runOnUiThread(this::finish);
     }).start();
   }
 
   @Override
   public void onBackPressed() {
-    if (webView.canGoBack()) {
-      webView.goBack();
-    } else {
-      setResult(RESULT_CANCELED);
-      super.onBackPressed();
-    }
+    setResult(RESULT_CANCELED);
+    super.onBackPressed();
   }
 }

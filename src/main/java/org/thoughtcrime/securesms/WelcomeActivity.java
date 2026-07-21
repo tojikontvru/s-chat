@@ -34,6 +34,8 @@ import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.AttachmentManager;
 import org.thoughtcrime.securesms.oauth.OAuthActivity;
+import org.thoughtcrime.securesms.oauth.OAuthConfig;
+import org.thoughtcrime.securesms.oauth.OAuthHelper;
 import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.qr.BackupTransferActivity;
 import org.thoughtcrime.securesms.qr.QrCodeHandler;
@@ -153,30 +155,59 @@ public class WelcomeActivity extends BaseActionBarActivity
 
   private void startOAuth(String domain) {
     oauthDomain = domain;
-    Intent intent = new Intent(this, OAuthActivity.class);
-    intent.putExtra(OAuthActivity.EXTRA_PROVIDER, domain);
-    startActivityForResult(intent, REQUEST_OAUTH);
+
+    // Google: WebView (Google doesn't accept custom scheme redirects)
+    if ("gmail.com".equals(domain)) {
+      Intent intent = new Intent(this, OAuthActivity.class);
+      intent.putExtra(OAuthActivity.EXTRA_PROVIDER, domain);
+      startActivityForResult(intent, REQUEST_OAUTH);
+      return;
+    }
+
+    // Yandex/Mail.ru/VK: open browser
+    OAuthConfig.Provider provider = OAuthConfig.getProvider(domain);
+    if (provider == null) return;
+
+    String codeVerifier = OAuthHelper.generateCodeVerifier();
+    String codeChallenge = OAuthHelper.generateCodeChallenge(codeVerifier);
+    String state = OAuthHelper.getState();
+    OAuthHelper.storeSession(state, domain, codeVerifier);
+
+    String authUrl = OAuthHelper.buildAuthUrl(provider, codeChallenge, state);
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
+    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+    // Yandex → Yandex Browser, fallback Chrome
+    if ("yandex.ru".equals(domain)) {
+      browserIntent.setPackage("com.yandex.browser");
+    } else {
+      browserIntent.setPackage("com.android.chrome");
+    }
+
+    startActivity(browserIntent);
   }
 
   private void handleOAuthResult(int resultCode, Intent data) {
-    if (resultCode != RESULT_OK || data == null) return;
+    if (resultCode != RESULT_OK) return;
 
-    String email = data.getStringExtra(OAuthActivity.RESULT_EMAIL);
-    String accessToken = data.getStringExtra(OAuthActivity.RESULT_ACCESS_TOKEN);
+    // Google WebView stores result via OAuthHelper
+    OAuthHelper.AuthResult result = OAuthHelper.getPendingResult();
+    if (result == null) return;
 
-    if (email != null && !email.contains("@")) {
-      String domain = oauthDomain;
-      if (domain != null) {
-        email = email + "@" + domain;
-      }
+    String domain = OAuthHelper.getPendingDomain();
+    if (domain == null) domain = oauthDomain;
+
+    String email = result.email;
+    if (email != null && !email.contains("@") && domain != null) {
+      email = email + "@" + domain;
     }
 
     Intent editIntent = new Intent(this, org.thoughtcrime.securesms.relay.EditRelayActivity.class);
     if (email != null) {
       editIntent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_ADDR, email);
     }
-    if (accessToken != null) {
-      editIntent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_PW, accessToken);
+    if (result.accessToken != null) {
+      editIntent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_PW, result.accessToken);
     }
     startActivity(editIntent);
   }
@@ -212,6 +243,36 @@ public class WelcomeActivity extends BaseActionBarActivity
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    checkPendingOAuthResult();
+  }
+
+  private void checkPendingOAuthResult() {
+    OAuthHelper.AuthResult result = OAuthHelper.getPendingResult();
+    if (result == null) return;
+
+    String domain = OAuthHelper.getPendingDomain();
+    if (domain == null) domain = oauthDomain;
+
+    String oauthDomain = domain;
+
+    String email = result.email;
+    if (email != null && !email.contains("@") && oauthDomain != null) {
+      email = email + "@" + oauthDomain;
+    }
+
+    Intent editIntent = new Intent(this, org.thoughtcrime.securesms.relay.EditRelayActivity.class);
+    if (email != null) {
+      editIntent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_ADDR, email);
+    }
+    if (result.accessToken != null) {
+      editIntent.putExtra(org.thoughtcrime.securesms.relay.EditRelayActivity.EXTRA_PW, result.accessToken);
+    }
+    startActivity(editIntent);
   }
 
   @Override

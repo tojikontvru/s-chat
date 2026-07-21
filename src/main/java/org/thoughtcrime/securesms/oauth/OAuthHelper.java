@@ -9,9 +9,40 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class OAuthHelper {
+
+  private static final HashMap<String, OAuthSession> pendingSessions = new HashMap<>();
+  private static AuthResult pendingResult;
+  private static String pendingDomain;
+
+  public static class OAuthSession {
+    public final String domain;
+    public final String codeVerifier;
+    public OAuthSession(String domain, String codeVerifier) {
+      this.domain = domain;
+      this.codeVerifier = codeVerifier;
+    }
+  }
+
+  public static void storeResult(AuthResult result, String domain) {
+    pendingResult = result;
+    pendingDomain = domain;
+  }
+
+  public static AuthResult getPendingResult() {
+    AuthResult r = pendingResult;
+    pendingResult = null;
+    return r;
+  }
+
+  public static String getPendingDomain() {
+    String d = pendingDomain;
+    pendingDomain = null;
+    return d;
+  }
 
   public static class AuthResult {
     public final String accessToken;
@@ -23,6 +54,14 @@ public class OAuthHelper {
       this.refreshToken = refreshToken;
       this.email = email;
     }
+  }
+
+  public static void storeSession(String state, String domain, String codeVerifier) {
+    pendingSessions.put(state, new OAuthSession(domain, codeVerifier));
+  }
+
+  public static OAuthSession getSession(String state) {
+    return pendingSessions.remove(state);
   }
 
   public static String generateCodeVerifier() {
