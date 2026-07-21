@@ -28,8 +28,12 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        versionCode 751
-        versionName "2.53.0"
+        // versionCode auto-increments from git commit count
+        def cmd = 'git rev-list --count HEAD'
+        versionCode Integer.parseInt(cmd.execute().text.trim())
+
+        // versionName: MAJOR.MINOR.PATCH
+        versionName "1.0.0"
 
         applicationId "tj.safarali.schat"
         multiDexEnabled true
@@ -136,9 +140,7 @@ android {
 
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = outputFileName
-                    .replace("s-chat-android", "s-chat")
-                    .replace(".apk", "-${variant.versionName}.apk")
+            outputFileName = "s-chat-v${variant.versionName}-${variant.buildType.name}.apk"
         }
     }
 
