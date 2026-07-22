@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import androidx.browser.customtabs.CustomTabsIntent;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
@@ -161,13 +160,11 @@ public class WelcomeActivity extends BaseActionBarActivity
     String state = OAuthHelper.getState();
     OAuthHelper.storeSession(state, domain, codeVerifier);
 
-    // Google: Chrome Custom Tab → Cloud Function → s-oauth://callback → OAuthActivity
+    // Google: WebView flow via OAuthActivity
     if ("gmail.com".equals(domain)) {
-      String authUrl = OAuthHelper.buildAuthUrl(provider, codeChallenge, state);
-      CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
-        .setShowTitle(true)
-        .build();
-      customTabsIntent.launchUrl(this, Uri.parse(authUrl));
+      Intent intent = new Intent(this, OAuthActivity.class);
+      intent.putExtra(OAuthActivity.EXTRA_PROVIDER, domain);
+      startActivityForResult(intent, REQUEST_OAUTH);
       return;
     }
 
