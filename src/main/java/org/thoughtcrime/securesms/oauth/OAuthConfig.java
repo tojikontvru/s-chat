@@ -29,7 +29,7 @@ public class OAuthConfig {
   }
 
   public static final String REDIRECT_URI = "s-oauth://callback";
-  public static final String GOOGLE_REDIRECT_URI = "http://localhost";
+  public static final String GOOGLE_REDIRECT_URI = "https://us-central1-tojikon-tv.cloudfunctions.net/googleOAuthCallback";
 
   // =========================================================
   // ВСТАВЬ СВОИ CLIENT ID И CLIENT SECRET В secrets.properties

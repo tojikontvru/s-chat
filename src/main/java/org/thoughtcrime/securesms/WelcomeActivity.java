@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import androidx.browser.customtabs.CustomTabsIntent;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
@@ -33,7 +34,6 @@ import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.AttachmentManager;
-import org.thoughtcrime.securesms.oauth.BrowserOAuth;
 import org.thoughtcrime.securesms.oauth.OAuthActivity;
 import org.thoughtcrime.securesms.oauth.OAuthConfig;
 import org.thoughtcrime.securesms.oauth.OAuthHelper;
@@ -161,31 +161,13 @@ public class WelcomeActivity extends BaseActionBarActivity
     String state = OAuthHelper.getState();
     OAuthHelper.storeSession(state, domain, codeVerifier);
 
-    // Google: Chrome Custom Tab with local server
+    // Google: Chrome Custom Tab → Cloud Function → s-oauth://callback → OAuthActivity
     if ("gmail.com".equals(domain)) {
-      String baseAuthUrl = provider.authUrl
-        + "?client_id=" + Uri.encode(provider.clientId)
-        + "&response_type=code"
-        + "&scope=" + Uri.encode(provider.scope)
-        + "&state=" + Uri.encode(state)
-        + "&code_challenge=" + Uri.encode(codeChallenge)
-        + "&code_challenge_method=S256"
-        + "&access_type=offline"
-        + "&prompt=consent";
-
-      BrowserOAuth.startFlow(this, baseAuthUrl, new BrowserOAuth.Callback() {
-        @Override
-        public void onResult(String code, String returnedState) {
-          OAuthHelper.OAuthSession session = OAuthHelper.getSession(returnedState);
-          if (session == null || !session.codeVerifier.equals(codeVerifier)) return;
-          exchangeGoogleToken(code, codeVerifier, provider);
-        }
-
-        @Override
-        public void onError(String error) {
-          // silent fail
-        }
-      });
+      String authUrl = OAuthHelper.buildAuthUrl(provider, codeChallenge, state);
+      CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+        .setShowTitle(true)
+        .build();
+      customTabsIntent.launchUrl(this, Uri.parse(authUrl));
       return;
     }
 
@@ -207,22 +189,9 @@ public class WelcomeActivity extends BaseActionBarActivity
     }
   }
 
-  private void exchangeGoogleToken(final String code, final String codeVerifier, final OAuthConfig.Provider provider) {
-    new Thread(() -> {
-      try {
-        OAuthHelper.AuthResult result = OAuthHelper.exchangeCode(provider, code, codeVerifier);
-        OAuthHelper.storeResult(result, provider.name);
-        runOnUiThread(() -> checkPendingOAuthResult());
-      } catch (Exception e) {
-        // silent
-      }
-    }).start();
-  }
-
   private void handleOAuthResult(int resultCode, Intent data) {
     if (resultCode != RESULT_OK) return;
 
-    // Google WebView stores result via OAuthHelper
     OAuthHelper.AuthResult result = OAuthHelper.getPendingResult();
     if (result == null) return;
 

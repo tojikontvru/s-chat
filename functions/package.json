@@ -1,0 +1,9 @@
+{
+  "name": "schat-oauth-callback",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "firebase-functions": "^4.9.0"
+  }
+}
