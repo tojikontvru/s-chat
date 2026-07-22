@@ -198,13 +198,17 @@ public class WelcomeActivity extends BaseActionBarActivity
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-    if ("yandex.ru".equals(domain)) {
-      browserIntent.setPackage("com.yandex.browser");
-    } else {
-      browserIntent.setPackage("com.android.chrome");
+    try {
+      if ("yandex.ru".equals(domain)) {
+        browserIntent.setPackage("com.yandex.browser");
+      } else {
+        browserIntent.setPackage("com.android.chrome");
+      }
+      startActivity(browserIntent);
+    } catch (Exception e) {
+      browserIntent.setPackage(null);
+      startActivity(browserIntent);
     }
-
-    startActivity(browserIntent);
   }
 
   private void exchangeGoogleToken(final String code, final String codeVerifier, final OAuthConfig.Provider provider) {
