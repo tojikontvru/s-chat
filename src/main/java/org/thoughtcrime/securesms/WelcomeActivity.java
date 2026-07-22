@@ -77,13 +77,9 @@ public class WelcomeActivity extends BaseActionBarActivity
 
     Button providerGmail = findViewById(R.id.provider_gmail);
     Button providerYandex = findViewById(R.id.provider_yandex);
-    Button providerMailru = findViewById(R.id.provider_mailru);
-    Button providerVk = findViewById(R.id.provider_vk);
 
     providerGmail.setOnClickListener(v -> startOAuth("gmail.com"));
     providerYandex.setOnClickListener(v -> startOAuth("yandex.ru"));
-    providerMailru.setOnClickListener(v -> startOAuth("mail.ru"));
-    providerVk.setOnClickListener(v -> startOAuth("vk.com"));
 
     View view = View.inflate(this, R.layout.login_options_view, null);
     AlertDialog signInDialog =

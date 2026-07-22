@@ -22,9 +22,10 @@ public class BrowserOAuth {
 
   public static void startFlow(Activity activity, String authUrl, Callback callback) {
     try {
-      ServerSocket serverSocket = new ServerSocket(49357, 1, java.net.InetAddress.getByName("127.0.0.1"));
+      ServerSocket serverSocket = new ServerSocket(0, 1, java.net.InetAddress.getByName("127.0.0.1"));
+      serverSocket.setSoTimeout(120000);
       int port = serverSocket.getLocalPort();
-      String redirectUri = "http://localhost:" + port + "/";
+      String redirectUri = "http://localhost:" + port;
 
       String finalAuthUrl = authUrl + "&redirect_uri=" + Uri.encode(redirectUri);
 
@@ -34,16 +35,16 @@ public class BrowserOAuth {
           Scanner sc = new Scanner(socket.getInputStream());
           String requestLine = sc.hasNextLine() ? sc.nextLine() : "";
 
-          String[] parts = requestLine.split(" ");
           String query = "";
+          String[] parts = requestLine.split(" ");
           if (parts.length >= 2) {
             String path = parts[1];
             int qIdx = path.indexOf('?');
             if (qIdx >= 0) query = path.substring(qIdx + 1);
           }
 
-          String body = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" +
-            "<html><body><p>Authorization complete! You can close this tab.</p></body></html>";
+          String html = "<html><body><p>OK</p><script>window.close()</script></body></html>";
+          String body = "HTTP/1.1 200 OK\r\nContent-Length: " + html.length() + "\r\nContent-Type: text/html\r\n\r\n" + html;
           OutputStream os = socket.getOutputStream();
           os.write(body.getBytes(StandardCharsets.UTF_8));
           os.close();
@@ -62,7 +63,7 @@ public class BrowserOAuth {
             }
           }
 
-          if (code != null && state != null) {
+          if (code != null) {
             String finalCode = code;
             String finalState = state;
             activity.runOnUiThread(() -> callback.onResult(finalCode, finalState));
