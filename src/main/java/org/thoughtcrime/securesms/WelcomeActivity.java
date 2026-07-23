@@ -76,10 +76,6 @@ public class WelcomeActivity extends BaseActionBarActivity
     Button signInButton = findViewById(R.id.signin_button);
 
     Button providerGmail = findViewById(R.id.provider_gmail);
-    Button providerYandex = findViewById(R.id.provider_yandex);
-
-    providerGmail.setOnClickListener(v -> startOAuth("gmail.com"));
-    providerYandex.setOnClickListener(v -> startOAuth("yandex.ru"));
 
     View view = View.inflate(this, R.layout.login_options_view, null);
     AlertDialog signInDialog =
@@ -187,23 +183,6 @@ public class WelcomeActivity extends BaseActionBarActivity
         }
       });
       return;
-    }
-
-    // Yandex/Mail.ru/VK: open browser
-    String authUrl = OAuthHelper.buildAuthUrl(provider, codeChallenge, state);
-    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
-    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-    try {
-      if ("yandex.ru".equals(domain)) {
-        browserIntent.setPackage("com.yandex.browser");
-      } else {
-        browserIntent.setPackage("com.android.chrome");
-      }
-      startActivity(browserIntent);
-    } catch (Exception e) {
-      browserIntent.setPackage(null);
-      startActivity(browserIntent);
     }
   }
 
