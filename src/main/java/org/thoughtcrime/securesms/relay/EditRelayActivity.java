@@ -192,6 +192,11 @@ public class EditRelayActivity extends BaseActionBarActivity
         emailInput.setSelection(config.addr.length(), config.addr.length());
       }
       passwordInput.setText(config.password);
+    } else if (addr != null) { // OAuth flow: pre-fill from intent
+      emailInput.setText(addr);
+      emailInput.setSelection(addr.length(), addr.length());
+      String pw = getIntent().getStringExtra(EXTRA_PW);
+      if (pw != null) passwordInput.setText(pw);
 
       TextInputEditText imapLoginInput = findViewById(R.id.imap_login_text);
       imapLoginInput.setText(config.imapUser);
