@@ -559,7 +559,6 @@ public class WelcomeActivity extends BaseActionBarActivity
       e.printStackTrace();
     }
   }
-}
 
   private void exchangeGoogleToken(final String code, final String codeVerifier, final OAuthConfig.Provider provider) {
     new Thread(() -> {
@@ -572,3 +571,4 @@ public class WelcomeActivity extends BaseActionBarActivity
       }
     }).start();
   }
+}
