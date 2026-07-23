@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class BrowserOAuth {
 
   public interface Callback {
-    void onResult(String code, String state);
+    void onResult(String code, String state, String redirectUri);
     void onError(String error);
   }
 
@@ -70,7 +70,7 @@ public class BrowserOAuth {
           if (code != null) {
             String finalCode = code;
             String finalState = state;
-            activity.runOnUiThread(() -> callback.onResult(finalCode, finalState));
+            activity.runOnUiThread(() -> callback.onResult(finalCode, finalState, redirectUri));
           } else {
             activity.runOnUiThread(() -> callback.onError("No code in callback"));
           }
