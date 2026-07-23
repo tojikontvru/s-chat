@@ -99,6 +99,7 @@ public class WelcomeActivity extends BaseActionBarActivity
     signUpButton.setOnClickListener(
         (v) -> startActivity(new Intent(this, InstantOnboardingActivity.class)));
     signInButton.setOnClickListener((v) -> signInDialog.show());
+    providerGmail.setOnClickListener((v) -> startOAuth("gmail.com"));
 
     registerForEvents();
     initializeActionBar();
