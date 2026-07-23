@@ -99,8 +99,12 @@ public class OAuthHelper {
   }
 
   public static AuthResult exchangeCode(OAuthConfig.Provider provider, String code, String codeVerifier) {
+    return exchangeCode(provider, code, codeVerifier,
+      isGoogleProvider(provider) ? OAuthConfig.GOOGLE_REDIRECT_URI : OAuthConfig.REDIRECT_URI);
+  }
+
+  public static AuthResult exchangeCode(OAuthConfig.Provider provider, String code, String codeVerifier, String redirectUri) {
     try {
-      String redirectUri = isGoogleProvider(provider) ? OAuthConfig.GOOGLE_REDIRECT_URI : OAuthConfig.REDIRECT_URI;
       URL url = new URL(provider.tokenUrl);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("POST");
