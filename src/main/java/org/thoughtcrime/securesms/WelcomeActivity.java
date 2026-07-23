@@ -171,10 +171,10 @@ public class WelcomeActivity extends BaseActionBarActivity
 
       BrowserOAuth.startFlow(this, baseAuthUrl, new BrowserOAuth.Callback() {
         @Override
-        public void onResult(String code, String returnedState) {
+        public void onResult(String code, String returnedState, String redirectUri) {
           OAuthHelper.OAuthSession session = OAuthHelper.getSession(returnedState);
           if (session == null || !session.codeVerifier.equals(codeVerifier)) return;
-          exchangeGoogleToken(code, codeVerifier, provider);
+          exchangeGoogleToken(code, codeVerifier, provider, redirectUri);
         }
 
         @Override
@@ -539,10 +539,10 @@ public class WelcomeActivity extends BaseActionBarActivity
     }
   }
 
-  private void exchangeGoogleToken(final String code, final String codeVerifier, final OAuthConfig.Provider provider) {
+  private void exchangeGoogleToken(final String code, final String codeVerifier, final OAuthConfig.Provider provider, final String redirectUri) {
     new Thread(() -> {
       try {
-        OAuthHelper.AuthResult result = OAuthHelper.exchangeCode(provider, code, codeVerifier);
+        OAuthHelper.AuthResult result = OAuthHelper.exchangeCode(provider, code, codeVerifier, redirectUri);
         OAuthHelper.storeResult(result, provider.name);
         runOnUiThread(() -> checkPendingOAuthResult());
       } catch (Exception e) {
