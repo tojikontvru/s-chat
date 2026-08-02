@@ -6,6 +6,13 @@
         android:key="preference_category_profile" />
 
     <Preference
+        android:key="preference_category_username"
+        android:title="@string/username_setup"
+        android:summary="@string/username_desc"
+        android:icon="@drawable/ic_person_24dp"
+        android:layout="@layout/preference_item" />
+
+    <Preference
         android:key="preference_category_chats"
         android:title="@string/pref_chats"
         android:icon="@drawable/ic_forum_24dp"
