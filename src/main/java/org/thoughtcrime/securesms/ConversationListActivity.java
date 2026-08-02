@@ -44,7 +44,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.EditText;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -80,8 +79,8 @@ import org.thoughtcrime.securesms.search.SearchFragment;
 import org.thoughtcrime.securesms.util.DynamicNoActionBarTheme;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.Prefs;
-import org.thoughtcrime.securesms.username.UsernameService;
-import com.google.firebase.firestore.DocumentSnapshot;
+import org.thoughtcrime.securesms.BuildConfig;
+import org.thoughtcrime.securesms.username.UsernameSearchHelper;
 import org.thoughtcrime.securesms.util.SaveAttachmentTask;
 import org.thoughtcrime.securesms.util.ScreenLockUtil;
 import org.thoughtcrime.securesms.util.SendRelayedMessageUtil;
@@ -762,51 +761,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   }
 
   private void showUsernameSearchDialog() {
-    final EditText input = new EditText(this);
-    input.setHint(R.string.username_search_hint);
-    input.setSingleLine(true);
-    input.setPadding(48, 32, 48, 32);
-
-    new AlertDialog.Builder(this)
-      .setTitle(R.string.username_search)
-      .setView(input)
-      .setPositiveButton(android.R.string.search_go, (dialog, which) -> {
-        final String query = input.getText().toString().trim();
-        if (query.isEmpty()) return;
-        searchUsername(query);
-      })
-      .setNegativeButton(android.R.string.cancel, null)
-      .show();
-  }
-
-  private void searchUsername(String username) {
-    UsernameService.searchExactUsername(username)
-      .addOnSuccessListener(doc -> {
-        if (doc.exists()) {
-          String email = doc.getString("email");
-          String displayName = doc.getString("displayName");
-          new AlertDialog.Builder(ConversationListActivity.this)
-            .setTitle(R.string.username_found)
-            .setMessage(getString(R.string.username_found, username, email))
-            .setPositiveButton(R.string.chat, (d, w) -> {
-              Intent intent = new Intent(this, ConversationActivity.class);
-              intent.putExtra(ConversationActivity.ADDRESS_EXTRA, email);
-              intent.putExtra(ConversationActivity.STARTING_POSITION_EXTRA, -1);
-              startActivity(intent);
-            })
-            .setNegativeButton(android.R.string.cancel, null)
-            .show();
-        } else {
-          new AlertDialog.Builder(ConversationListActivity.this)
-            .setTitle(R.string.username_not_found)
-            .setMessage(getString(R.string.username_not_found))
-            .setPositiveButton(android.R.string.ok, null)
-            .show();
-        }
-      })
-      .addOnFailureListener(e -> {
-        Toast.makeText(this, "Search failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-      });
+    UsernameSearchHelper.showSearchDialog(this);
   }
 
   @Override
