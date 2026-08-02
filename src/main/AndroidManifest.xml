@@ -478,6 +478,12 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize">
         </activity>
 
+        <activity
+            android:name=".username.UsernameSetupActivity"
+            android:theme="@style/TextSecure.LightTheme"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize">
+        </activity>
+
         <service
             android:name=".service.GenericForegroundService"
             android:foregroundServiceType="dataSync" />
