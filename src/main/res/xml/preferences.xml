@@ -9,7 +9,7 @@
         android:key="preference_category_username"
         android:title="@string/username_setup"
         android:summary="@string/username_desc"
-        android:icon="@drawable/ic_person_24dp"
+        android:icon="@drawable/ic_person"
         android:layout="@layout/preference_item" />
 
     <Preference
