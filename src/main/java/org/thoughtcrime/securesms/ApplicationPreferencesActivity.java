@@ -45,6 +45,7 @@ import org.thoughtcrime.securesms.preferences.widgets.ProfilePreference;
 import org.thoughtcrime.securesms.qr.BackupTransferActivity;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.IntentUtils;
+import org.thoughtcrime.securesms.username.UsernameSetupActivity;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.ScreenLockUtil;
 import org.thoughtcrime.securesms.util.ViewUtil;
@@ -66,6 +67,7 @@ public class ApplicationPreferencesActivity extends PassphraseRequiredActionBarA
   private static final String PREFERENCE_CATEGORY_CONNECTIVITY = "preference_category_connectivity";
   private static final String PREFERENCE_CATEGORY_DONATE = "preference_category_donate";
   private static final String PREFERENCE_CATEGORY_HELP = "preference_category_help";
+  private static final String PREFERENCE_CATEGORY_USERNAME = "preference_category_username";
 
   public static final int REQUEST_CODE_SET_BACKGROUND = 11;
 
@@ -157,6 +159,9 @@ public class ApplicationPreferencesActivity extends PassphraseRequiredActionBarA
 
       this.findPreference(PREFERENCE_CATEGORY_HELP)
           .setOnPreferenceClickListener(new CategoryClickListener(PREFERENCE_CATEGORY_HELP));
+
+      this.findPreference(PREFERENCE_CATEGORY_USERNAME)
+          .setOnPreferenceClickListener(new UsernameClickListener());
 
       DcHelper.getEventCenter(getActivity())
           .addObserver(DcContext.DC_EVENT_CONNECTIVITY_CHANGED, this);
@@ -295,6 +300,15 @@ public class ApplicationPreferencesActivity extends PassphraseRequiredActionBarA
           fragmentTransaction.commit();
         }
 
+        return true;
+      }
+    }
+
+    private class UsernameClickListener implements Preference.OnPreferenceClickListener {
+      @Override
+      public boolean onPreferenceClick(Preference preference) {
+        Intent intent = new Intent(preference.getContext(), UsernameSetupActivity.class);
+        getActivity().startActivity(intent);
         return true;
       }
     }
