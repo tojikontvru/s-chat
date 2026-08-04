@@ -1274,4 +1274,6 @@
     <string name="username_search_hint">Enter username</string>
     <string name="username_not_found">Username not found</string>
     <string name="username_found">Found: %1$s (%2$s)</string>
+    <string name="username_search_results">Users found</string>
+    <string name="username_not_found_hint">No users found for "@%1$s"</string>
 </resources>
